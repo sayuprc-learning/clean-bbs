@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use packages\Domain\Application\Bbs\BbsCreateInteractor;
 use packages\Domain\Application\Bbs\BbsGetDetailInteractor;
 use packages\Domain\Application\Bbs\BbsGetListInteractor;
 use packages\Domain\Domain\Bbs\BbsRepositoryInterface;
 use packages\Infrastructure\Bbs\BbsRepository;
 use packages\InMemoryInfrastructure\Bbs\InMemoryBbsRepository;
+use packages\UseCase\Bbs\Create\BbsCreateUseCaseInterface;
 use packages\UseCase\Bbs\GetDetail\BbsGetDetailUseCaseInterface;
 use packages\UseCase\Bbs\GetList\BbsGetListUseCaseInterface;
 
@@ -34,6 +36,9 @@ class AppServiceProvider extends ServiceProvider
 
         // BBS詳細表示ユースケース設定
         $this->app->bind(BbsGetDetailUseCaseInterface::class, BbsGetDetailInteractor::class);
+
+        // BBS作成ユースケース
+        $this->app->bind(BbsCreateUseCaseInterface::class, BbsCreateInteractor::class);
     }
 
     /**
