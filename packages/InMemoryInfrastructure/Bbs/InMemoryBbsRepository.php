@@ -43,4 +43,19 @@ class InMemoryBbsRepository implements BbsRepositoryInterface
     {
         return $this->db[$bbsId->getValue()];
     }
+
+    public function save(Bbs $bbs): void
+    {
+        $this->db[$bbs->getBbsId()->getValue()] = $bbs;
+    }
+
+    public function getNextBbsId(): int
+    {
+        return rand(1, 100);
+    }
+
+    public function getNextCommentId(): int
+    {
+        return rand(1, 100);
+    }
 }

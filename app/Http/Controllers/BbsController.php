@@ -7,6 +7,8 @@ use App\Http\Models\Bbs\Common\CommentViewModel;
 use App\Http\Models\Bbs\GetDetail\BbsGetDetailViewModel;
 use App\Http\Models\Bbs\GetList\BbsGetListViewModel;
 use Illuminate\Http\Request;
+use packages\UseCase\Bbs\Create\BbsCreateRequest;
+use packages\UseCase\Bbs\Create\BbsCreateUseCaseInterface;
 use packages\UseCase\Bbs\GetDetail\BbsGetDetailRequest;
 use packages\UseCase\Bbs\GetDetail\BbsGetDetailUseCaseInterface;
 use packages\UseCase\Bbs\GetList\BbsGetListRequest;
@@ -28,7 +30,7 @@ class BbsController extends Controller
                     $commentViewModels[] = new CommentViewModel($comment->id, $comment->content, $comment->postedAt);
                 }
             }
-            $bbsViewModels[] = new BbsViewModel($bbs->name, $commentViewModels);
+            $bbsViewModels[] = new BbsViewModel($bbs->id, $bbs->name, $commentViewModels);
         }
 
         $viewModel = new BbsGetListViewModel($bbsViewModels);
@@ -49,10 +51,19 @@ class BbsController extends Controller
             }
         }
 
-        $bbsViewModel = new BbsViewModel($response->bbs->name, $commentViewModels);
+        $bbsViewModel = new BbsViewModel($response->bbs->id, $response->bbs->name, $commentViewModels);
 
         $viewModel = new BbsGetDetailViewModel($bbsViewModel);
 
         return view('bbs.show', compact('viewModel'));
+    }
+
+    public function create(BbsCreateUseCaseInterface $interactor, Request $request)
+    {
+        $createRequest = new BbsCreateRequest($request->input('name'));
+
+        $response = $interactor->handle($createRequest);
+
+        return redirect('/bbs/' . $response->id);
     }
 }
