@@ -3,6 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use packages\Domain\Application\Bbs\BbsGetListInteractor;
+use packages\Domain\Domain\Bbs\BbsRepositoryInterface;
+use packages\Infrastructure\Bbs\BbsRepository;
+use packages\InMemoryInfrastructure\Bbs\InMemoryBbsRepository;
+use packages\UseCase\Bbs\GetList\BbsGetListUseCaseInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +18,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if (config('app.inMemory')) {
+            $bbsRepositoryClass = InMemoryBbsRepository::class;
+        } else {
+            $bbsRepositoryClass = BbsRepository::class;
+        }
+
+        // リポジトリ設定
+        $this->app->singleton(BbsRepositoryInterface::class, $bbsRepositoryClass);
+
+        // BBS一覧取得ユースケース設定
+        $this->app->bind(BbsGetListUseCaseInterface::class, BbsGetListInteractor::class);
     }
 
     /**
