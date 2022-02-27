@@ -3,6 +3,7 @@
 namespace packages\Infrastructure\Bbs;
 
 use App\Models\BbsEloquentModel;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use packages\Domain\Domain\Bbs\Bbs;
 use packages\Domain\Domain\Bbs\BbsId;
@@ -30,13 +31,14 @@ class BbsRepository implements BbsRepositoryInterface
 
         foreach ($eloquentBbses as $eloquentBbs) {
             $comments = [];
+            $bbsId = new BbsId($eloquentBbs->bbs_id);
             foreach ($eloquentBbs->comments as $comment) {
                 $commentId = new CommentId($comment->comment_id);
                 $commentContent = new CommentContent($comment->content);
-                $commentPostedAt = new CommentPostedAt($comment->posted_at);
-                $comments[] = new Comment($commentId, $commentContent, $commentPostedAt);
+                $commentPostedAt = new CommentPostedAt(new DateTime($comment->posted_at));
+                $comments[] = new Comment($bbsId, $commentId, $commentContent, $commentPostedAt);
             }
-            $bbses[] = new Bbs(new BbsId($eloquentBbs->bbs_id), new BbsName($eloquentBbs->name), $comments);
+            $bbses[] = new Bbs($bbsId, new BbsName($eloquentBbs->name), $comments);
         }
 
         return $bbses;
@@ -50,9 +52,10 @@ class BbsRepository implements BbsRepositoryInterface
 
         foreach ($found->comments as $comment) {
             $comments[] = new Comment(
+                $bbsId,
                 new CommentId($comment->comment_id),
                 new CommentContent($comment->content),
-                new CommentPostedAt($comment->posted_at)
+                new CommentPostedAt(new DateTime($comment->posted_at))
             );
         }
 
@@ -76,6 +79,18 @@ class BbsRepository implements BbsRepositoryInterface
 
     public function getNextCommentId(): int
     {
-        return DB::raw("SELECT nextval('seq_comment_id') AS comment_id;")->getValue();
+        $next = DB::select("SELECT nextval('seq_comment_id') AS comment_id")[0]->comment_id;
+
+        return $next;
+    }
+
+    public function saveComment(Comment $comment): void
+    {
+        DB::table('comments')->updateOrInsert([
+            'bbs_id' => $comment->getBbsId()->getValue(),
+            'comment_id' => $comment->getCommentId()->getValue(),
+            'content' => $comment->getCommentContent()->getValue(),
+            'posted_at' => $comment->getCommentPostedAt()->getValue()->format('Y/m/d H:i:s'),
+        ]);
     }
 }

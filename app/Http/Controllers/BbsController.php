@@ -7,6 +7,8 @@ use App\Http\Models\Bbs\Common\CommentViewModel;
 use App\Http\Models\Bbs\GetDetail\BbsGetDetailViewModel;
 use App\Http\Models\Bbs\GetList\BbsGetListViewModel;
 use Illuminate\Http\Request;
+use packages\UseCase\Bbs\AddComment\BbsAddCommentRequest;
+use packages\UseCase\Bbs\AddComment\BbsAddCommentUseCaseInterface;
 use packages\UseCase\Bbs\Create\BbsCreateRequest;
 use packages\UseCase\Bbs\Create\BbsCreateUseCaseInterface;
 use packages\UseCase\Bbs\GetDetail\BbsGetDetailRequest;
@@ -65,5 +67,14 @@ class BbsController extends Controller
         $response = $interactor->handle($createRequest);
 
         return redirect('/bbs/' . $response->id);
+    }
+
+    public function addComment(BbsAddCommentUseCaseInterface $interactor, Request $request)
+    {
+        $addRequest = new BbsAddCommentRequest($request->input('bbs_id'), $request->input('comment'));
+
+        $response = $interactor->handle($addRequest);
+
+        return redirect('/bbs/' . $response->bbsId);
     }
 }

@@ -6,7 +6,6 @@ use packages\Domain\Domain\Bbs\Bbs;
 use packages\Domain\Domain\Bbs\BbsId;
 use packages\Domain\Domain\Bbs\BbsName;
 use packages\Domain\Domain\Bbs\BbsRepositoryInterface;
-use packages\Domain\Domain\Bbs\BbsService;
 use packages\UseCase\Bbs\Create\BbsCreateRequest;
 use packages\UseCase\Bbs\Create\BbsCreateResponse;
 use packages\UseCase\Bbs\Create\BbsCreateUseCaseInterface;
