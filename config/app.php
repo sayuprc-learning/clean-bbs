@@ -194,4 +194,5 @@ return [
         // ...
     ])->toArray(),
 
+    'inMemory' => env('IN_MEMORY'),
 ];
