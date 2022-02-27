@@ -14,9 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('comments', function (Blueprint $table) {
-            $table->id('comment_id');
+            $table->unsignedBigInteger('comment_id')->primary();
             $table->unsignedBigInteger('bbs_id');
             $table->string('content', 1024);
+            $table->dateTime('posted_at');
             $table->timestamps();
 
             $table->foreign('bbs_id')->references('bbs_id')->on('bbses')->onDelete('CASCADE');

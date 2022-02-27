@@ -8,4 +8,6 @@ interface BbsRepositoryInterface
      * @return Bbs[]
      */
     public function findAll(): array;
+
+    public function find(BbsId $bbsId): Bbs;
 }
