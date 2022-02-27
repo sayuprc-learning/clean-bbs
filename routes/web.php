@@ -22,3 +22,4 @@ Route::get('/bbs', [BbsController::class, 'index']);
 Route::get('/bbs/{bbsId}', [BbsController::class, 'show']);
 
 Route::post('/bbs', [BbsController::class, 'create']);
+Route::post('/bbs/comment', [BbsController::class, 'addComment']);

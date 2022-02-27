@@ -16,4 +16,6 @@ interface BbsRepositoryInterface
     public function getNextBbsId(): int;
 
     public function getNextCommentId(): int;
+
+    public function saveComment(Comment $comment): void;
 }
