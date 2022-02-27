@@ -2,6 +2,7 @@
 
 namespace packages\InMemoryInfrastructure\Bbs;
 
+use DateTime;
 use packages\Domain\Domain\Bbs\Bbs;
 use packages\Domain\Domain\Bbs\BbsId;
 use packages\Domain\Domain\Bbs\BbsName;
@@ -9,6 +10,7 @@ use packages\Domain\Domain\Bbs\BbsRepositoryInterface;
 use packages\Domain\Domain\Bbs\Comment;
 use packages\Domain\Domain\Bbs\CommentContent;
 use packages\Domain\Domain\Bbs\CommentId;
+use packages\Domain\Domain\Bbs\CommentPostedAt;
 
 class InMemoryBbsRepository implements BbsRepositoryInterface
 {
@@ -24,12 +26,21 @@ class InMemoryBbsRepository implements BbsRepositoryInterface
             $bbsName = new BbsName('掲示板名:' . $val);
             $commentId = new CommentId($val);
             $commentContent = new CommentContent('コメント:' . $val);
-            $this->db[$bbsId->getValue()] = new Bbs($bbsId, $bbsName, [new Comment($commentId, $commentContent)]);
+            $this->db[$bbsId->getValue()] = new Bbs(
+                $bbsId,
+                $bbsName,
+                [new Comment($commentId, $commentContent, new CommentPostedAt(new DateTime()))]
+            );
         }
     }
 
     public function findAll(): array
     {
         return $this->db;
+    }
+
+    public function find(BbsId $bbsId): Bbs
+    {
+        return $this->db[$bbsId->getValue()];
     }
 }

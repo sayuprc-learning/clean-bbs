@@ -29,7 +29,11 @@ class BbsGetListInteractor implements BbsGetListUseCaseInterface
             $commentModels = [];
             if (!empty($comments)) {
                 foreach ($comments as $comment) {
-                    $commentModels[] = new CommentModel($comment->getCommentId()->getValue(), $comment->getCommentContent()->getValue());
+                    $commentModels[] = new CommentModel(
+                        $comment->getCommentId()->getValue(),
+                        $comment->getCommentContent()->getValue(),
+                        $comment->getCommentPostedAt()->getValue()
+                    );
                 }
             }
             $bbsModels[] = new BbsModel($bbs->getBbsId()->getValue(), $bbs->getBbsName()->getValue(), $commentModels);

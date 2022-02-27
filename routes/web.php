@@ -19,3 +19,4 @@ Route::get('/', function () {
 });
 
 Route::get('/bbs', [BbsController::class, 'index']);
+Route::get('/bbs/{bbsId}', [BbsController::class, 'show']);
